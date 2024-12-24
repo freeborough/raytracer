@@ -40,12 +40,12 @@ fn main() {
             let g = 0.0;
             let b = j as f64 / (image_height as f64 - 1.0);
 
-            let ir = (255.999 * r) as u32;
-            let ig = (255.999 * g) as u32;
-            let ib = (255.999 * b) as u32;
+            let r = (255.999 * r) as u32;
+            let g = (255.999 * g) as u32;
+            let b = (255.999 * b) as u32;
 
             let _bytes_written = output_buffer
-                .write(format!("{ir} {ig} {ib}\n").as_bytes())
+                .write(format!("{r} {g} {b}\n").as_bytes())
                 .unwrap();
         }
     }
