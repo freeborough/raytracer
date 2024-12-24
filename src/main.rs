@@ -14,7 +14,7 @@ fn hit_sphere(centre: Point3, radius: f64, r: &Ray) -> bool {
 
 fn ray_colour(r: &Ray) -> Colour {
     if hit_sphere(Vector3::new(0.0, 0.0, -1.0), 0.5, r) {
-        return Colour::new_colour(0.8, 0.0, 0.8);
+        return Colour::new_colour(1.0, 0.0, 0.0);
     }
 
     let unit_direction = unit_vector(r.direction());
