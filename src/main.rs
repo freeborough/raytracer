@@ -38,9 +38,9 @@ fn main() {
         for i in 0..image_width {
             let r = i as f64 / (image_width as f64 - 1.0);
             let g = 0.0;
-            let b: f64 = j as f64 / (image_height as f64 - 1.0);
+            let b = j as f64 / (image_height as f64 - 1.0);
 
-            let ir: u32 = (255.999 * r) as u32;
+            let ir = (255.999 * r) as u32;
             let ig = (255.999 * g) as u32;
             let ib = (255.999 * b) as u32;
 
