@@ -1,6 +1,6 @@
 use std::fs::File;
 use std::io::{BufWriter, Write};
-use raytracer::{unit_vector, Colour, Vector3};
+use raytracer::{unit_vector, write_colour, Colour, Vector3};
 
 fn main() {
     println!("Raytracer v0.1");
@@ -42,13 +42,7 @@ fn main() {
             let g = 0.0;
             let b = j as f64 / (image_height as f64 - 1.0);
 
-            let r = (255.999 * r) as u32;
-            let g = (255.999 * g) as u32;
-            let b = (255.999 * b) as u32;
-
-            let _bytes_written = output_buffer
-                .write(format!("{r} {g} {b}\n").as_bytes())
-                .unwrap();
+            write_colour(&mut output_buffer, &Colour::new_colour(r, g, b));
         }
     }
 
