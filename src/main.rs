@@ -1,6 +1,6 @@
 use std::fs::File;
 use std::io::{BufWriter, Write};
-use raytracer::{Vector3, unit_vector};
+use raytracer::{unit_vector, Colour, Vector3};
 
 fn main() {
     println!("Raytracer v0.1");
@@ -14,6 +14,8 @@ fn main() {
     let unit_a = unit_vector(&a);
     println!("Unit: {}", unit_a.length());
 
+    let purple = Colour::new_colour(0.8, 0.0, 0.8);
+    println!("Purple: {}", purple);
 
     // Render
 
@@ -21,7 +23,7 @@ fn main() {
     let output_filename = "./output.ppm";
     let output_file = File::create(output_filename)
         .unwrap_or_else(|_| panic!("Could not open output file: {output_filename}"));
-    let mut output_buffer = BufWriter::new(output_file);
+    let mut output_buffer: BufWriter<File> = BufWriter::new(output_file);
 
     // Header
     let _bytes_written = output_buffer

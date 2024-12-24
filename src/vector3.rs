@@ -53,6 +53,38 @@ impl Vector3 {
     }
 }
 
+impl Colour {
+    pub fn new_colour(r: f64, g: f64, b: f64) -> Self {
+        Colour { e: [r, g, b] }
+    }
+
+    // Getters
+    pub fn r(&self) -> &f64 {
+        &self.e[0]
+    }
+
+    pub fn g(&self) -> &f64 {
+        &self.e[1]
+    }
+
+    pub fn b(&self) -> &f64 {
+        &self.e[2]
+    }
+
+    // Setters
+    pub fn set_r(&mut self, r: f64) {
+        self.e[0] = r;
+    }
+
+    pub fn set_g(&mut self, g: f64) {
+        self.e[1] = g;
+    }
+
+    pub fn set_b(&mut self, b: f64) {
+        self.e[2] = b;
+    }
+}
+
 // Traits
 impl Default for Vector3 {
     fn default() -> Self {
