@@ -9,6 +9,7 @@ pub struct Vector3 {
 }
 
 pub type Point3 = Vector3;
+pub type Colour = Vector3;
 
 impl Vector3 {
     // New

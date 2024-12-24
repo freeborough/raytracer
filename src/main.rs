@@ -1,8 +1,6 @@
-pub mod vector3;
-
 use std::fs::File;
 use std::io::{BufWriter, Write};
-use vector3::{Vector3, util::unit_vector};
+use raytracer::{Vector3, unit_vector};
 
 fn main() {
     println!("Raytracer v0.1");
