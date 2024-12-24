@@ -1,4 +1,4 @@
-use crate::Vector3;
+use super::Vector3;
 use std::ops;
 
 // Accessors

@@ -1,4 +1,4 @@
-use crate::Vector3;
+use super::Vector3;
 
 // Dot Product
 pub fn dot(u: &Vector3, v: &Vector3) -> f64 {
