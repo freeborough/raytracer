@@ -5,9 +5,13 @@ use raytracer::{unit_vector, write_colour, Colour, Vector3};
 fn main() {
     println!("Raytracer v0.1");
 
-    // Image
-    let image_width: u32 = 256;
-    let image_height: u32 = 256;
+    // Image - Derrive height from width and aspect ration, and make sure it's at least 1 pixel high.
+    let aspect_ratio = 16.0 / 9.0;
+    let image_width: u32 = 400;
+    let image_height: u32 = u32::max((image_width as f64 / aspect_ratio) as u32, 1);
+
+    // Camera
+    
 
     let a = Vector3::new(2.0, 2.0, 2.0);
     println!("A: {}", a.length());
