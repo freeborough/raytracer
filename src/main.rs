@@ -13,14 +13,6 @@ fn main() {
     // Camera
     
 
-    let a = Vector3::new(2.0, 2.0, 2.0);
-    println!("A: {}", a.length());
-    let unit_a = unit_vector(&a);
-    println!("Unit: {}", unit_a.length());
-
-    let purple = Colour::new_colour(0.8, 0.0, 0.8);
-    println!("Purple: {}", purple);
-
     // Render
 
     // Open output file for writing.
