@@ -56,7 +56,7 @@ impl Vector3 {
 // Traits
 impl Default for Vector3 {
     fn default() -> Self {
-        Vector3 { e: [0.0, 0.0, 0.0] }
+        Vector3::new(0.0, 0.0, 0.0)
     }
 }
 
