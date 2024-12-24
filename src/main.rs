@@ -2,19 +2,27 @@ use raytracer::{unit_vector, write_colour, dot, Colour, Point3, Ray, Vector3};
 use std::fs::File;
 use std::io::{BufWriter, Write};
 
-fn hit_sphere(centre: Point3, radius: f64, r: &Ray) -> bool {
+fn hit_sphere(centre: Point3, radius: f64, r: &Ray) -> f64 {
     let oc = centre - *r.origin();
     let a = dot(r.direction(), r.direction());
     let b = -2.0 * dot(r.direction(), &oc);
     let c = dot(&oc, &oc) - radius * radius;
     let discriminant: f64 = b*b - 4.0 * a * c;
 
-    discriminant >= 0.0
+    if discriminant < 0.0 {
+        -1.0
+    } else {
+        (-b - f64::sqrt(discriminant)) / (2.0 * a)
+    }
 }
 
 fn ray_colour(r: &Ray) -> Colour {
-    if hit_sphere(Vector3::new(0.0, 0.0, -1.0), 0.5, r) {
-        return Colour::new_colour(1.0, 0.0, 0.0);
+    let t = hit_sphere(Vector3::new(0.0, 0.0, -1.0), 0.5, r);
+    if t > 0.0 {
+        let ray_at = r.at(t) - Vector3::new(0.0, 0.0, -1.0);
+        let normal = unit_vector(&ray_at);
+        
+        return 0.5 * Colour::new_colour(normal.x() + 1.0, normal.y() + 1.0, normal.z() + 1.0)
     }
 
     let unit_direction = unit_vector(r.direction());
@@ -55,7 +63,7 @@ fn main() {
     // Render
 
     // Open output file for writing.
-    let output_filename = "./output.ppm";
+    let output_filename = "./output/pretty.ppm";
     let output_file = File::create(output_filename)
         .unwrap_or_else(|_| panic!("Could not open output file: {output_filename}"));
     let mut output_buffer: BufWriter<File> = BufWriter::new(output_file);
