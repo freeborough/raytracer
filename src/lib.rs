@@ -8,3 +8,4 @@ pub use self::{
 
 pub mod output;
 pub mod vector3;
+pub mod ray;
