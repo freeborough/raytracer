@@ -89,3 +89,9 @@ impl ops::DivAssign<f64> for Vector3 {
         *self *= 1.0 / rhs;
     }
 }
+
+impl PartialEq<Vector3> for Vector3 {
+    fn eq(&self, other: &Vector3) -> bool {
+        self.e == other.e
+    }
+}
