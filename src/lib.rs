@@ -10,6 +10,7 @@ pub use self::{
     },
 };
 
+pub mod camera;
 pub mod hittable;
 pub mod interval;
 pub mod output;
