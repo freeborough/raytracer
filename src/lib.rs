@@ -2,7 +2,7 @@ pub use self::{
     hittable::{HitRecord, Hittable},
     output::write_colour,
     ray::Ray,
-    sphere::Sphere,
+    shapes::sphere::Sphere,
     vector3::{
         util::{cross, dot, unit_vector},
         Colour, Point3, Vector3,
@@ -12,5 +12,5 @@ pub use self::{
 pub mod hittable;
 pub mod output;
 pub mod ray;
-pub mod sphere;
+pub mod shapes;
 pub mod vector3;
