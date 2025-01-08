@@ -1,5 +1,5 @@
 pub use self::{
-    hittable::{HitRecord, Hittable},
+    hittable::{HitRecord, Hittable, HittableList},
     output::write_colour,
     ray::Ray,
     shapes::sphere::Sphere,
