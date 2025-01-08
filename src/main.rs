@@ -1,29 +1,15 @@
-use raytracer::{dot, unit_vector, write_colour, Colour, Point3, Ray, Vector3};
+use core::f64;
+use raytracer::{
+    shapes::sphere::Sphere, unit_vector, write_colour, Colour, HitRecord, Hittable, HittableList,
+    Point3, Ray, Vector3,
+};
 use std::fs::File;
 use std::io::{BufWriter, Write};
 
-fn hit_sphere(centre: Point3, radius: f64, r: &Ray) -> f64 {
-    let oc = centre - *r.origin();
-
-    let a = r.direction().length_squared();
-    let h = dot(r.direction(), &oc);
-    let c = oc.length_squared() - radius * radius;
-    let discriminant = h * h - a * c;
-
-    if discriminant < 0.0 {
-        -1.0
-    } else {
-        (h - f64::sqrt(discriminant)) / a
-    }
-}
-
-fn ray_colour(r: &Ray) -> Colour {
-    let t = hit_sphere(Vector3::new(0.0, 0.0, -1.0), 0.5, r);
-    if t > 0.0 {
-        let ray_at = r.at(t) - Vector3::new(0.0, 0.0, -1.0);
-        let normal = unit_vector(&ray_at);
-
-        return 0.5 * Colour::new_colour(normal.x() + 1.0, normal.y() + 1.0, normal.z() + 1.0);
+fn ray_colour<T: Hittable>(r: &Ray, world: &T) -> Colour {
+    let mut rec = HitRecord::new();
+    if world.hit(r, 0.0, f64::INFINITY, &mut rec) {
+        return 0.5 * (rec.normal + Colour::new(1.0, 1.0, 1.0));
     }
 
     let unit_direction = unit_vector(r.direction());
@@ -41,6 +27,11 @@ fn main() {
     let aspect_ratio = 16.0 / 9.0;
     let image_width: u32 = 400;
     let image_height: u32 = u32::max((image_width as f64 / aspect_ratio) as u32, 1);
+
+    // World
+    let mut world = HittableList::new();
+    world.add(Sphere::new(Point3::new(0.0, 0.0, -1.0), 0.5));
+    world.add(Sphere::new(Point3::new(0.0, -100.5, -1.0), 100.0));
 
     // Camera
     let focal_length = 1.0;
@@ -86,7 +77,7 @@ fn main() {
             let ray_direction = pixel_centre - camera_center;
             let r = Ray::new(camera_center, ray_direction);
 
-            let pixel_colour = ray_colour(&r);
+            let pixel_colour = ray_colour(&r, &world);
             write_colour(&mut output_buffer, &pixel_colour);
         }
     }
