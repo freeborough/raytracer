@@ -1,4 +1,5 @@
 use core::f64;
+use raytracer::Interval;
 use raytracer::{
     shapes::sphere::Sphere, unit_vector, write_colour, Colour, HitRecord, Hittable, HittableList,
     Point3, Ray, Vector3,
@@ -8,7 +9,7 @@ use std::io::{BufWriter, Write};
 
 fn ray_colour<T: Hittable>(r: &Ray, world: &T) -> Colour {
     let mut rec = HitRecord::new();
-    if world.hit(r, 0.0, f64::INFINITY, &mut rec) {
+    if world.hit(r, Interval::build(0.0, f64::INFINITY), &mut rec) {
         return 0.5 * (rec.normal + Colour::new(1.0, 1.0, 1.0));
     }
 

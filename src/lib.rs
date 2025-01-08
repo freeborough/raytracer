@@ -1,5 +1,6 @@
 pub use self::{
     hittable::{HitRecord, Hittable, HittableList},
+    interval::Interval,
     output::write_colour,
     ray::Ray,
     shapes::sphere::Sphere,
@@ -10,6 +11,7 @@ pub use self::{
 };
 
 pub mod hittable;
+pub mod interval;
 pub mod output;
 pub mod ray;
 pub mod shapes;
