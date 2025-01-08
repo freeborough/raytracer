@@ -1,17 +1,22 @@
+use crate::{
+    unit_vector, write_colour, Colour, HitRecord, Hittable, Interval, Point3, Ray, Vector3,
+};
+use rand::Rng;
 use std::fs::File;
-use std::io::{BufWriter, Write};
-use crate::{Hittable, Point3, Vector3, HitRecord, Interval, Colour, Ray, write_colour, unit_vector};
+use std::io::{BufWriter, Write, stdout};
 
 #[derive(Debug)]
 pub struct Camera {
     pub aspect_ratio: f64,
     pub image_width: u32,
+    pub samples_per_pixel: u32,
 
     image_height: u32,
     center: Point3,
     pixel_origin: Point3,
     pixel_delta_u: Vector3,
     pixel_delta_v: Vector3,
+    pixel_samples_scale: f64,
 }
 
 impl Camera {
@@ -38,15 +43,18 @@ impl Camera {
         // Render loop.
         for j in 0..self.image_height {
             print!(".");
+            stdout().flush().unwrap();
 
             for i in 0..self.image_width {
-                let pixel_centre =
-                    self.pixel_origin + (i as f64 * self.pixel_delta_u) + (j as f64 * self.pixel_delta_v);
-                let ray_direction = pixel_centre - self.center;
-                let r = Ray::new(self.center, ray_direction);
+                let mut pixel_colour = Colour::default();
 
-                let pixel_colour = self.ray_colour(&r, world);
-                write_colour(&mut output_buffer, &pixel_colour);
+                for _sample in 0..self.samples_per_pixel {
+                    let r = self.get_ray(i, j);
+                    pixel_colour += self.ray_colour(&r, world)
+                }
+
+                let final_colour = self.pixel_samples_scale * pixel_colour;
+                write_colour(&mut output_buffer, &final_colour);
             }
         }
 
@@ -60,6 +68,7 @@ impl Camera {
 
     fn initialize(&mut self) {
         self.image_height = u32::max((self.image_width as f64 / self.aspect_ratio) as u32, 1);
+        self.pixel_samples_scale = 1.0 / self.samples_per_pixel as f64;
         self.center = Point3::default();
 
         // Determine viewport dimensions.
@@ -88,13 +97,30 @@ impl Camera {
         if world.hit(r, Interval::build(0.0, f64::INFINITY), &mut rec) {
             return 0.5 * (rec.normal + Colour::new(1.0, 1.0, 1.0));
         }
-    
+
         let unit_direction = unit_vector(r.direction());
         let colour_one = Colour::new(1.0, 1.0, 1.0);
         let colour_two = Colour::new(0.5, 0.7, 1.0);
         let a = 0.5 * (unit_direction.y() + 1.0);
-    
+
         (1.0 - a) * colour_one + a * colour_two
+    }
+
+    fn get_ray(&self, i: u32, j: u32) -> Ray {
+        let offset = self.sample_square();
+        let pixel_sample = self.pixel_origin
+            + ((i as f64 + offset.x()) * self.pixel_delta_u)
+            + ((j as f64 + offset.y()) * self.pixel_delta_v);
+        
+        let ray_origin = self.center;
+        let ray_direction = pixel_sample - ray_origin;
+        
+        Ray::new(ray_origin, ray_direction)
+    }
+
+    fn sample_square(&self) -> Vector3 {
+        let mut rng = rand::thread_rng();
+        Vector3::new(rng.gen::<f64>() - 0.5, rng.gen::<f64>() - 0.5, 0.0)
     }
 }
 
@@ -103,11 +129,13 @@ impl Default for Camera {
         Self {
             aspect_ratio: 1.0,
             image_width: 100,
+            samples_per_pixel: 10,
             image_height: Default::default(),
             center: Default::default(),
             pixel_origin: Default::default(),
             pixel_delta_u: Default::default(),
             pixel_delta_v: Default::default(),
+            pixel_samples_scale: Default::default(),
         }
     }
 }
