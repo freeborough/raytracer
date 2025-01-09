@@ -52,6 +52,10 @@ impl Vector3 {
         }
     }
 
+    pub fn reflect(v: &Vector3, n: &Vector3) -> Vector3 {
+        *v - 2.0 * dot(v, n) * *n
+    }
+
     // Getters
     pub fn x(&self) -> &f64 {
         &self.e[0]
