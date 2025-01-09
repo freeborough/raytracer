@@ -45,6 +45,10 @@ need_stdout = false
 command = ["cargo", "test"]
 need_stdout = true
 
+[jobs.pretty-test]
+command = ["cargo", "pretty-test"]
+need_stdout = true
+
 [jobs.nextest]
 command = [
     "cargo", "nextest", "run",

@@ -3,7 +3,7 @@ use crate::{
 };
 use rand::Rng;
 use std::fs::File;
-use std::io::{BufWriter, Write, stdout};
+use std::io::{stdout, BufWriter, Write};
 
 #[derive(Debug)]
 pub struct Camera {
@@ -93,6 +93,10 @@ impl Camera {
         self.pixel_origin = viewport_upper_left + 0.5 * (self.pixel_delta_u + self.pixel_delta_v);
     }
 
+    ///
+    /// Casts a ray out into the world and returns the computed.  It recursively calls itself until
+    /// the depth is reduced to 0, averaging the colour returned from each bounce.
+    ///
     fn ray_colour<T: Hittable>(&self, r: &Ray, depth: u32, world: &T) -> Colour {
         if depth == 0 {
             return Colour::new(0.0, 0.0, 0.0);
@@ -100,7 +104,7 @@ impl Camera {
 
         let mut rec = HitRecord::new();
         if world.hit(r, Interval::build(0.001, f64::INFINITY), &mut rec) {
-            let direction = Vector3::random_on_hemisphere(rec.normal);
+            let direction = rec.normal + Vector3::random_unit();
             return 0.5 * self.ray_colour(&Ray::new(rec.p, direction), depth - 1, world);
         }
 
@@ -117,10 +121,10 @@ impl Camera {
         let pixel_sample = self.pixel_origin
             + ((i as f64 + offset.x()) * self.pixel_delta_u)
             + ((j as f64 + offset.y()) * self.pixel_delta_v);
-        
+
         let ray_origin = self.center;
         let ray_direction = pixel_sample - ray_origin;
-        
+
         Ray::new(ray_origin, ray_direction)
     }
 
