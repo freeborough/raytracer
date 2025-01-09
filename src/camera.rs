@@ -10,6 +10,7 @@ pub struct Camera {
     pub aspect_ratio: f64,
     pub image_width: u32,
     pub samples_per_pixel: u32,
+    pub max_depth: u32,
 
     image_height: u32,
     center: Point3,
@@ -50,7 +51,7 @@ impl Camera {
 
                 for _sample in 0..self.samples_per_pixel {
                     let r = self.get_ray(i, j);
-                    pixel_colour += self.ray_colour(&r, world)
+                    pixel_colour += self.ray_colour(&r, self.max_depth, world)
                 }
 
                 let final_colour = self.pixel_samples_scale * pixel_colour;
@@ -92,11 +93,15 @@ impl Camera {
         self.pixel_origin = viewport_upper_left + 0.5 * (self.pixel_delta_u + self.pixel_delta_v);
     }
 
-    fn ray_colour<T: Hittable>(&self, r: &Ray, world: &T) -> Colour {
+    fn ray_colour<T: Hittable>(&self, r: &Ray, depth: u32, world: &T) -> Colour {
+        if depth == 0 {
+            return Colour::new(0.0, 0.0, 0.0);
+        }
+
         let mut rec = HitRecord::new();
-        if world.hit(r, Interval::build(0.0, f64::INFINITY), &mut rec) {
+        if world.hit(r, Interval::build(0.001, f64::INFINITY), &mut rec) {
             let direction = Vector3::random_on_hemisphere(rec.normal);
-            return 0.5 * self.ray_colour(&Ray::new(rec.p, direction), world);
+            return 0.5 * self.ray_colour(&Ray::new(rec.p, direction), depth - 1, world);
         }
 
         let unit_direction = unit_vector(r.direction());
@@ -131,6 +136,7 @@ impl Default for Camera {
             aspect_ratio: 1.0,
             image_width: 100,
             samples_per_pixel: 10,
+            max_depth: 10,
             image_height: Default::default(),
             center: Default::default(),
             pixel_origin: Default::default(),
