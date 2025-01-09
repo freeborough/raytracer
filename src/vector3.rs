@@ -2,8 +2,8 @@ pub mod operators;
 pub mod util;
 
 use rand::Rng;
-use util::dot;
 use std::fmt;
+use util::dot;
 
 #[derive(Debug, Clone, Copy)]
 pub struct Vector3 {
@@ -85,6 +85,11 @@ impl Vector3 {
 
     pub fn length(&self) -> f64 {
         self.length_squared().sqrt()
+    }
+
+    pub fn near_zero(&self) -> bool {
+        let s = 1e-8;
+        (f64::abs(self.e[0]) < s) && (f64::abs(self.e[1]) < s) && (f64::abs(self.e[2]) < s)
     }
 }
 
