@@ -1,6 +1,8 @@
 pub use self::{
     hittable::{HitRecord, Hittable, HittableList},
     interval::Interval,
+    materials::Material,
+    materials::lambertian::Lambertian,
     output::write_colour,
     ray::Ray,
     shapes::sphere::Sphere,
@@ -13,6 +15,7 @@ pub use self::{
 pub mod camera;
 pub mod hittable;
 pub mod interval;
+pub mod materials;
 pub mod output;
 pub mod ray;
 pub mod shapes;

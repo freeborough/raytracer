@@ -1,16 +1,28 @@
-use crate::{Point3, Ray, Vector3, dot, Interval};
+use crate::{dot, Colour, Interval, Lambertian, Material, Point3, Ray, Vector3};
+use std::sync::Arc;
 
-#[derive(Debug, Default, Clone, Copy)]
+#[derive(Clone)]
 pub struct HitRecord {
     pub p: Point3,
     pub normal: Vector3,
+    pub mat: Arc<dyn Material>,
     pub t: f64,
     pub front_face: bool,
 }
 
 impl HitRecord {
     pub fn new() -> Self {
-        HitRecord::default()
+        Self::default()
+    }
+
+    pub fn build(mat: Arc<dyn Material>) -> Self {
+        Self {
+            p: Default::default(),
+            normal: Default::default(),
+            mat,
+            t: Default::default(),
+            front_face: Default::default(),
+        }
     }
 
     pub fn set_face_normal(&mut self, r: &Ray, outward_normal: &Vector3) {
@@ -25,6 +37,18 @@ impl HitRecord {
     }
 }
 
+impl Default for HitRecord {
+    fn default() -> Self {
+        Self {
+            p: Default::default(),
+            normal: Default::default(),
+            mat: Arc::new(Lambertian::new(Colour::new(0.0, 0.0, 0.0))),
+            t: Default::default(),
+            front_face: Default::default(),
+        }
+    }
+}
+
 pub trait Hittable {
     fn hit(&self, r: &Ray, ray_t: Interval, rec: &mut HitRecord) -> bool;
 }
@@ -35,9 +59,7 @@ pub struct HittableList {
 
 impl HittableList {
     pub fn new() -> Self {
-        Self {
-            objects: vec!(),
-        }
+        Self { objects: vec![] }
     }
 
     pub fn build<T: Hittable + 'static>(object: T) -> Self {
@@ -65,7 +87,7 @@ impl Hittable for HittableList {
             if object.hit(r, Interval::build(ray_t.min, closest_so_far), &mut temp_rec) {
                 hit_anything = true;
                 closest_so_far = temp_rec.t;
-                *rec = temp_rec;
+                *rec = temp_rec.clone();
             }
         }
 
