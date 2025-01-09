@@ -3,6 +3,7 @@ pub use self::{
     interval::Interval,
     materials::Material,
     materials::lambertian::Lambertian,
+    materials::metal::Metal,
     output::write_colour,
     ray::Ray,
     shapes::sphere::Sphere,

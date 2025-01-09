@@ -19,11 +19,11 @@ impl Sphere {
     /// assert_eq!(s.center, Point3::new(1.0, 2.0, 3.0));
     /// assert_eq!(s.radius, 5.0);
     /// ```
-    pub fn new(center: Point3, radius: f64) -> Self {
+    pub fn new(center: Point3, radius: f64, mat: Arc<dyn Material>) -> Self {
         Self {
             center,
             radius: f64::max(radius, 0.0),
-            mat: Arc::new(Lambertian::new(Colour::new(0.0, 0.0, 0.0))),
+            mat,
         }
     }
 }
