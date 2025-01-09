@@ -99,13 +99,19 @@ impl Camera {
     ///
     fn ray_colour<T: Hittable>(&self, r: &Ray, depth: u32, world: &T) -> Colour {
         if depth == 0 {
-            return Colour::new(0.0, 0.0, 0.0);
+            return Colour::default();
         }
 
         let mut rec = HitRecord::new();
         if world.hit(r, Interval::build(0.001, f64::INFINITY), &mut rec) {
-            let direction = rec.normal + Vector3::random_unit();
-            return 0.5 * self.ray_colour(&Ray::new(rec.p, direction), depth - 1, world);
+            let mut scattered = Ray::default();
+            let mut attenuation = Colour::default();
+            
+            if rec.mat.scatter(&r, &rec, &mut attenuation, &mut scattered) {
+                return attenuation * self.ray_colour(&scattered, depth - 1, world);
+            } else {
+                return Colour::default();
+            }
         }
 
         let unit_direction = unit_vector(r.direction());
