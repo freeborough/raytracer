@@ -1,4 +1,4 @@
-use crate::{dot, Colour, HitRecord, Hittable, Interval, Lambertian, Material, Point3, Ray};
+use crate::{dot, HitRecord, Hittable, Interval, Material, Point3, Ray};
 use std::sync::Arc;
 
 #[derive(Clone)]
@@ -9,16 +9,6 @@ pub struct Sphere {
 }
 
 impl Sphere {
-    /// Creates a new sphere at the specified location with the specified radius.
-    ///
-    /// # Examples
-    /// ```
-    /// use raytracer::{Sphere,Point3};
-    /// let s = Sphere::new(Point3::new(1.0, 2.0, 3.0), 5.0);
-    ///
-    /// assert_eq!(s.center, Point3::new(1.0, 2.0, 3.0));
-    /// assert_eq!(s.radius, 5.0);
-    /// ```
     pub fn new(center: Point3, radius: f64, mat: Arc<dyn Material>) -> Self {
         Self {
             center,
