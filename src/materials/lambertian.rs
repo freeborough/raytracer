@@ -22,7 +22,7 @@ impl Material for Lambertian {
 
         // Catch degenerate scatter direction.
         if scatter_direction.near_zero() {
-            scatter_direction = rec.normal
+            scatter_direction = rec.normal;
         }
 
         *scattered = Ray::new(rec.p, scatter_direction);
